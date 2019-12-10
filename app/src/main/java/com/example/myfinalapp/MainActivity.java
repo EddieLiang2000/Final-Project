@@ -45,11 +45,39 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         final Switch on = findViewById(R.id.On);
         final Button reset = findViewById(R.id.Reset);
         final ProgressBar volume = findViewById(R.id.Volume);
-        final AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        final AudioManager audioManager = (AudioManager) MainActivity.this.getSystemService(Context.AUDIO_SERVICE);
+        timer = findViewById(R.id.Timer);
+        timer.setVisibility(View.GONE);
+        reset.setVisibility(View.GONE);
+        on.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View unused) {
+                if (resetVisibility == -1 && volumeVisibility == -1) {
+                    reset.setVisibility(View.VISIBLE);
+                    volume.setVisibility(View.VISIBLE);
+                    resetVisibility = 0;
+                    volumeVisibility = 0;
+                } else {
+                    reset.setVisibility(View.GONE);
+                    volume.setVisibility(View.GONE);
+                    resetVisibility = -1;
+                    volumeVisibility = -1;
+                }
+            }
+        });
+        reset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View unused) {
+                volume.setProgress(0);
+                MainActivity.this.resetTimer();
+                AudioManager audioManager = (AudioManager) MainActivity.this.getSystemService(Context.AUDIO_SERVICE);
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
+            }
+        });
 
     }
 
-    //from https://stackoverflow.com/questions/14574879/how-to-detect-movement-of-an-android-device
+    //from https://.com/questions/14574879/how-to-detect-movement-of-an-android-device
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
